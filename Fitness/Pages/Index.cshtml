@@ -1,0 +1,201 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Тренировки";
+}
+
+<div class="container mt-4">
+    <input type="hidden" id="isAuthenticated" value="@User.Identity.IsAuthenticated.ToString()" />
+    <h1 class="text-center mb-4">Расписание тренировок</h1>
+    
+    <!-- Сообщения для пользователя -->
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show" role="alert" style="background: linear-gradient(135deg, var(--pastel-blue), var(--pastel-mint)); color: var(--text-dark); font-weight: 500; border: none; box-shadow: 0 4px 15px var(--shadow-soft);">
+            <strong>@TempData["Message"]</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Переключатель дней по центру страницы -->
+    <div class="d-flex justify-content-center align-items-center mb-4">
+        <form method="get" class="me-2">
+            @{
+                var prevDisabled = Model.CurrentDate <= Model.MinDate;
+                var prevValue = prevDisabled ? Model.MinDate.ToString("yyyy-MM-dd") : Model.CurrentDate.AddDays(-1).ToString("yyyy-MM-dd");
+            }
+            <button class="btn btn-secondary" name="date" value="@prevValue" @(prevDisabled ? "disabled" : "")>
+                ← Предыдущий день
+            </button>
+        </form>
+
+        <div class="mx-4 text-center">
+            <span style="font-size: 1.3rem; font-weight: 600; color: var(--text-dark);">
+                📆 @Model.CurrentDate.ToString("dd MMMM yyyy")
+            </span>
+        </div>
+
+        <form method="get" class="ms-2">
+            @{
+                var nextDisabled = Model.CurrentDate >= Model.MaxDate;
+                var nextValue = nextDisabled ? Model.MaxDate.ToString("yyyy-MM-dd") : Model.CurrentDate.AddDays(1).ToString("yyyy-MM-dd");
+            }
+            <button class="btn btn-secondary" name="date" value="@nextValue" @(nextDisabled ? "disabled" : "")>
+                Следующий день →
+            </button>
+        </form>
+    </div>
+
+    <div class="mb-4">
+        @if (User.Identity.IsAuthenticated && User.FindFirst(c => c.Type == "IsAdmin")?.Value == "True")
+        {
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addWorkoutModal">
+                ➕ Добавить тренировку
+            </button>
+        }
+    </div>
+
+    <!-- Проверка, есть ли тренировки -->
+    @if (Model.Workouts != null && Model.Workouts.Any())
+    {
+        <div class="row">
+            @foreach (var workout in Model.Workouts)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header text-center">
+                            <h5 class="card-title mb-0">💪 @workout.Title</h5>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <div class="mb-3">
+                                <p class="mb-2">
+                                    <strong>👨‍🏫 Тренер:</strong><br>
+                                    <span style="color: var(--text-light);">@workout.Trainer</span>
+                                </p>
+                                <p class="mb-2">
+                                    <strong>💰 Цена:</strong><br>
+                                    <span style="color: var(--accent-coral); font-size: 1.2rem; font-weight: 600;">
+                                        @workout.Price.ToString("C")
+                                    </span>
+                                </p>
+                                <p class="mb-2">
+                                    <strong>📅 Дата:</strong><br>
+                                    <span style="color: var(--text-light);">@workout.StartTime.ToString("dd MMMM yyyy")</span>
+                                </p>
+                                <p class="mb-3">
+                                    <strong>⏰ Время:</strong><br>
+                                    <span style="color: var(--text-light);">
+                                        @workout.StartTime.ToString("HH:mm") - @workout.EndTime.ToString("HH:mm")
+                                    </span>
+                                </p>
+                            </div>
+
+                            <div class="d-flex justify-content-center gap-2 mt-auto">
+                                <form method="post" asp-page-handler="ComeWorkout" asp-route-workoutId="@workout.Id">
+                                    <button type="submit" class="btn btn-success">
+                                        ✅ Записаться
+                                    </button>
+                                </form>
+
+                                <form method="get" asp-page="/WorkoutModel" asp-route-slug="@workout.Slug">
+                                    <button type="submit" class="btn btn-info">
+                                        ℹ️ Подробнее
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <div class="card" style="max-width: 500px; margin: 0 auto;">
+                <div class="card-body">
+                    <h3 style="font-size: 4rem; margin-bottom: 1rem;">😔</h3>
+                    <h4>Нет доступных тренировок</h4>
+                    <p class="text-muted">На выбранную дату тренировок не найдено. Попробуйте выбрать другую дату.</p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@if (ViewData["ShowAddModal"] is bool showModal && showModal)
+{
+    <script>
+        (function () {
+            var modalEl = document.getElementById('addWorkoutModal');
+            if (modalEl) {
+                var modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                modal.show();
+            }
+        })();
+    </script>
+}
+
+<!-- Модальное окно для добавления тренировки -->
+<div class="modal fade" id="addWorkoutModal" tabindex="-1" aria-labelledby="addWorkoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addWorkoutModalLabel">➕ Добавить новую тренировку</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-page-handler="AddWorkout">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                    }
+                    <div class="mb-3">
+                        <label for="workoutTitle" class="form-label">💪 Название тренировки</label>
+                        <input type="text" class="form-control" id="workoutTitle" asp-for="NewWorkout.Title" placeholder="Например: Йога для начинающих" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="workoutDescription" class="form-label">📝 Описание</label>
+                        <textarea class="form-control" id="workoutDescription" asp-for="NewWorkout.Description" rows="4" placeholder="Опишите тренировку..."></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="workoutTrainer" class="form-label">👨‍🏫 Тренер</label>
+                        <input type="text" class="form-control" id="workoutTrainer" asp-for="NewWorkout.Trainer" placeholder="Имя тренера" required />
+                    </div>
+                    <div class="mb-3">
+                        <label for="workoutPrice" class="form-label">💰 Цена (₽)</label>
+                        <input type="number" class="form-control" id="workoutPrice" asp-for="NewWorkout.Price" step="0.01" min="0" placeholder="0.00" required />
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="workoutStartTime" class="form-label">🕐 Начало</label>
+                            <input type="datetime-local" class="form-control" id="workoutStartTime" asp-for="NewWorkout.StartTime" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="workoutEndTime" class="form-label">🕑 Окончание</label>
+                            <input type="datetime-local" class="form-control" id="workoutEndTime" asp-for="NewWorkout.EndTime" required />
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="workoutSlug" class="form-label">🔗 Slug (английское название для URL)</label>
+                        <input type="text" class="form-control" id="workoutSlug" asp-for="NewWorkout.Slug" placeholder="например: dribbling-training" />
+                        <small class="form-text" style="color: var(--text-light);">
+                            Можно оставить пустым — slug сгенерируется автоматически
+                        </small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="workoutVideoUrl" class="form-label">🎥 Ссылка на видео (YouTube)</label>
+                        <input type="text" class="form-control" id="workoutVideoUrl" asp-for="NewWorkout.VideoUrl" placeholder="https://www.youtube.com/watch?v=..." />
+                        <small class="form-text" style="color: var(--text-light);">
+                            Необязательное поле
+                        </small>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
+                        <button type="submit" class="btn btn-primary">✅ Добавить тренировку</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,148 @@
+﻿@page "{slug}"
+@model WorkoutModel
+@{
+    ViewData["Title"] = Model.Workout?.Title ?? "Тренировка";
+}
+
+@if (Model.Workout != null)
+{
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <!-- Заголовок -->
+                <div class="text-center mb-5">
+                    <h1 class="mb-3">💪 @Model.Workout.Title</h1>
+                </div>
+
+                <div class="row">
+                    <!-- Основная информация -->
+                    <div class="col-md-8 mb-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="mb-0">📋 Информация о тренировке</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <h5 class="mb-3">📝 Описание</h5>
+                                    <p style="font-size: 1.1rem; line-height: 1.8; color: var(--text-light);">
+                                        @Model.Workout.Description
+                                    </p>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="p-3" style="background: var(--pastel-pink); border-radius: 15px;">
+                                            <strong>👨‍🏫 Тренер</strong><br>
+                                            <span style="font-size: 1.1rem;">@Model.Workout.Trainer</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="p-3" style="background: var(--pastel-mint); border-radius: 15px;">
+                                            <strong>💰 Цена</strong><br>
+                                            <span style="font-size: 1.3rem; font-weight: 600; color: var(--accent-coral);">
+                                                @Model.Workout.Price.ToString("C")
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="p-3" style="background: var(--pastel-blue); border-radius: 15px;">
+                                            <strong>📅 Дата</strong><br>
+                                            <span style="font-size: 1.1rem;">
+                                                @Model.Workout.StartTime.ToString("dd MMMM yyyy")
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="p-3" style="background: var(--pastel-yellow); border-radius: 15px;">
+                                            <strong>⏰ Время</strong><br>
+                                            <span style="font-size: 1.1rem;">
+                                                @Model.Workout.StartTime.ToString("HH:mm") - @Model.Workout.EndTime.ToString("HH:mm")
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Боковая панель с действиями -->
+                    <div class="col-md-4 mb-4">
+                        <div class="card" style="position: sticky; top: 20px;">
+                            <div class="card-header text-center">
+                                <h5 class="mb-0">🎯 Действия</h5>
+                            </div>
+                            <div class="card-body text-center">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <form method="post" asp-page-handler="ComeWorkout" asp-route-workoutId="@Model.Workout.Id">
+                                        <button type="submit" class="btn btn-success btn-lg w-100 mb-3">
+                                            ✅ Записаться на тренировку
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-info mb-3">
+                                        <p class="mb-2">Для записи необходимо войти в систему</p>
+                                        <a asp-page="/Login" class="btn btn-primary btn-sm">Войти</a>
+                                    </div>
+                                }
+
+                                <a asp-page="/Index" class="btn btn-secondary w-100">
+                                    ← Вернуться к расписанию
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Видео -->
+                @if (!string.IsNullOrEmpty(Model.Workout.VideoUrl))
+                {
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h4 class="mb-0">🎥 Видео по теме</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="ratio ratio-16x9">
+                                @{
+                                    var videoId = Model.Workout.VideoUrl.Contains("youtube.com/watch?v=") 
+                                        ? Model.Workout.VideoUrl.Substring(Model.Workout.VideoUrl.LastIndexOf('=') + 1)
+                                        : Model.Workout.VideoUrl.Contains("youtu.be/")
+                                        ? Model.Workout.VideoUrl.Substring(Model.Workout.VideoUrl.LastIndexOf('/') + 1)
+                                        : "";
+                                }
+                                @if (!string.IsNullOrEmpty(videoId))
+                                {
+                                    <iframe src="https://www.youtube.com/embed/@videoId" 
+                                            frameborder="0" 
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                            allowfullscreen
+                                            style="border-radius: 15px;"></iframe>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="container mt-5">
+        <div class="text-center">
+            <div class="card" style="max-width: 500px; margin: 0 auto;">
+                <div class="card-body">
+                    <h3 style="font-size: 4rem; margin-bottom: 1rem;">😔</h3>
+                    <h4>Тренировка не найдена</h4>
+                    <p class="text-muted">Запрашиваемая тренировка не существует.</p>
+                    <a asp-page="/Index" class="btn btn-primary">Вернуться к расписанию</a>
+                </div>
+            </div>
+        </div>
+    </div>
+}

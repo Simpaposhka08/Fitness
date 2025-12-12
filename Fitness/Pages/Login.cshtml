@@ -1,0 +1,64 @@
+﻿@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Вход";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h2 class="mb-0">🔐 Вход в систему</h2>
+                    <p class="mb-0 mt-2" style="color: var(--text-light); font-size: 0.9rem;">
+                        Добро пожаловать обратно!
+                    </p>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+
+                        <div class="form-group mb-3">
+                            <label for="phone_number" class="form-label">
+                                📱 Номер телефона
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="phone_number" 
+                                   name="PhoneNumber" 
+                                   placeholder="+7 (999) 123-45-67"
+                                   required>
+                        </div>
+
+                        <div class="form-group mb-4">
+                            <label for="password" class="form-label">
+                                🔒 Пароль
+                            </label>
+                            <input type="password" 
+                                   class="form-control" 
+                                   id="password" 
+                                   name="Password" 
+                                   placeholder="Введите пароль"
+                                   required>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                ✨ Войти
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p style="color: var(--text-light);">
+                            Нет аккаунта? 
+                            <a asp-page="/Register" style="color: var(--accent-coral); text-decoration: none; font-weight: 600;">
+                                Зарегистрируйтесь
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

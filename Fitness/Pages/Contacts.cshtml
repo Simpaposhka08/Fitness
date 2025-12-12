@@ -1,0 +1,97 @@
+﻿@page
+@model PrivacyModel
+@{
+    ViewData["Title"] = "Контакты";
+}
+
+<div class="container mt-4">
+    <h1 class="text-center mb-5">📞 Контакты</h1>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5 mb-4">
+            <div class="card h-100">
+                <div class="card-header text-center" style="background: linear-gradient(135deg, var(--pastel-pink), var(--pastel-lavender));">
+                    <div style="font-size: 3rem; margin-bottom: 0.5rem;">👨‍💻</div>
+                    <h4 class="mb-1">Миннигареева Вероника Денисовна</h4>
+                    <p class="mb-0" style="font-size: 0.9rem; opacity: 0.9;">
+                        КФУ ИВМИИТ, группа 09-351
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>💼 Должность:</strong><br>
+                        <span style="color: var(--text-light);">Студент, КФУ, ИВМИИТ</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong>📧 Электронная почта:</strong><br>
+                        <a href="mailto:1111@example.com" 
+                           style="color: var(--accent-coral); text-decoration: none; font-weight: 500;">
+                            bogdanov@mail.com
+                        </a>
+                    </div>
+                    <div>
+                        <strong>📱 Телефон:</strong><br>
+                        <a href="tel:+71234567890" 
+                           style="color: var(--accent-teal); text-decoration: none; font-weight: 500;">
+                            +7 (123) 456-78-90
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-5 mb-4">
+            <div class="card h-100">
+                <div class="card-header text-center" style="background: linear-gradient(135deg, var(--pastel-mint), var(--pastel-blue));">
+                    <div style="font-size: 3rem; margin-bottom: 0.5rem;">👨‍💻</div>
+                    <h4 class="mb-1">Юнусова Рената Айратовна</h4>
+                    <p class="mb-0" style="font-size: 0.9rem; opacity: 0.9;">
+                        КФУ ИВМИИТ, группа 09-351
+                    </p>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <strong>💼 Должность:</strong><br>
+                        <span style="color: var(--text-light);">Студент, КФУ, ИВМИИТ</span>
+                    </div>
+                    <div class="mb-3">
+                        <strong>📧 Электронная почта:</strong><br>
+                        <a href="mailto:22222@example.com" 
+                           style="color: var(--accent-coral); text-decoration: none; font-weight: 500;">
+                            yarullin@mail.com
+                        </a>
+                    </div>
+                    <div>
+                        <strong>📱 Телефон:</strong><br>
+                        <a href="tel:+79876543210" 
+                           style="color: var(--accent-teal); text-decoration: none; font-weight: 500;">
+                            +7 (987) 654-32-10
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Дополнительная информация -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4 class="mb-0">ℹ️ О проекте</h4>
+                </div>
+                <div class="card-body text-center">
+                    <p style="font-size: 1.1rem; color: var(--text-light); line-height: 1.8;">
+                        Добро пожаловать в Fitness Club! Мы предлагаем широкий выбор фитнес-тренировок 
+                        для всех уровней подготовки. Йога, пилатес, силовые тренировки, кардио и многое другое 
+                        с профессиональными тренерами. Записывайтесь на тренировки, следите за своим расписанием 
+                        и достигайте новых высот вместе с нами!
+                    </p>
+                    <a asp-page="/Index" class="btn btn-primary mt-3">
+                        💪 Посмотреть расписание
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
