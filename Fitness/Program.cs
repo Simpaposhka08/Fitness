@@ -3,21 +3,27 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Fitness.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ���������� ��������� ���� ������ � �������� �����������
-// Подключение базы данных PostgreSQL
 builder.Services.AddDbContext<FitnessDbContext>(options => 
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
     .ConfigureWarnings(warnings => warnings.Ignore(RelationalEventId.PendingModelChangesWarning))
                .EnableSensitiveDataLogging());
 
 
-// ���������� Razor Pages ��� ������ � �����������
 builder.Services.AddRazorPages();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromHours(4);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+builder.Services.AddHttpClient<AiCoachService>();
+builder.Services.AddHttpClient<MlRecommendationService>();
 
-// ���������� ��������������
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
@@ -27,12 +33,12 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 
 var app = builder.Build();
 
-// ��������� middleware ��� �������������� � �����������
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseRouting();
-app.UseStaticFiles();  // �������� ��������� ����������� ������, ����� ��� CSS, JavaScript, �����������.
+app.UseSession();
+app.UseStaticFiles(); 
 
 app.MapRazorPages();
 

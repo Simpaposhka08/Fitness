@@ -7,30 +7,23 @@ public class FitnessDbContext : DbContext
     public FitnessDbContext(DbContextOptions<FitnessDbContext> options) : base(options)
     {
     }
-
     public DbSet<User> Users { get; set; }
     public DbSet<Workout> Workouts { get; set; }
     public DbSet<PurchasedWorkout> PurchasedWorkouts { get; set; }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        // Для PostgreSQL используется тип numeric вместо decimal
         modelBuilder.Entity<Workout>()
            .Property(w => w.Price)
            .HasColumnType("numeric(18,2)");
-
-        // Генерация тренировок и расписаний для 5 дней
         modelBuilder.Entity<Workout>().HasData(
-            // Генерируем тренировки для каждого из 5 дней
             GenerateWorkoutsForDays(5)
         );
 
         modelBuilder.Entity<User>().HasData(
          new User
          {
-             Id = 1,  // Уникальный Id для пользователя
+             Id = 1,
              Name = "Admin",
              PhoneNumber = "77777777777",
              PasswordHash = "/Pe7bVRs+4LS5VSGmErnoYYqZmrLRB4M+LTtNKT8+dc=",  // Пароль Admin@2025

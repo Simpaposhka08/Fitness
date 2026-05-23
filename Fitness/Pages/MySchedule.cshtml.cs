@@ -15,16 +15,21 @@ public class MyScheduleModel : PageModel
         _context = context;
     }
 
-    public List<PurchasedWorkout> PurchasedWorkouts { get; set; }
+    public List<PurchasedWorkout> PurchasedWorkouts { get; set; } = new();
 
     public async Task OnGetAsync()
     {
         // �������� ������������� �������� ������������
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!int.TryParse(userId, out var parsedUserId))
+        {
+            PurchasedWorkouts = new List<PurchasedWorkout>();
+            return;
+        }
 
         // ��������� ��� ����������, �� ������� ������� ������������
         PurchasedWorkouts = await _context.PurchasedWorkouts
-            .Where(pw => pw.UserId == int.Parse(userId))
+            .Where(pw => pw.UserId == parsedUserId)
             .Include(pw => pw.Workout)  // �������� ��������� ������ � ����������
             .OrderBy(pw => pw.Workout.StartTime)
             .ToListAsync();

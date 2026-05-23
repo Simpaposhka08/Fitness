@@ -5,7 +5,7 @@
 }
 
 <div class="container mt-4">
-    <input type="hidden" id="isAuthenticated" value="@User.Identity.IsAuthenticated.ToString()" />
+    <input type="hidden" id="isAuthenticated" value="@((User.Identity?.IsAuthenticated == true).ToString())" />
     <h1 class="text-center mb-4">Расписание тренировок</h1>
     
     <!-- Сообщения для пользователя -->
@@ -47,7 +47,7 @@
     </div>
 
     <div class="mb-4">
-        @if (User.Identity.IsAuthenticated && User.FindFirst(c => c.Type == "IsAdmin")?.Value == "True")
+        @if (User.Identity?.IsAuthenticated == true && User.FindFirst(c => c.Type == "IsAdmin")?.Value == "True")
         {
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addWorkoutModal">
                 ➕ Добавить тренировку

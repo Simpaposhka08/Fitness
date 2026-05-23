@@ -1,0 +1,113 @@
+@page
+@model AICoachModel
+@{
+    ViewData["Title"] = "AI Coach";
+}
+
+<div class="container mt-4">
+    <h1 class="mb-3">AI Coach</h1>
+    <p class="text-muted">Подбор тренировок с учетом ваших параметров и расписания.</p>
+
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">@Model.ErrorMessage</div>
+    }
+
+    <div class="row">
+        <div class="col-lg-7 mb-4">
+            <div class="card">
+                <div class="card-header">Чат</div>
+                <div class="card-body">
+                    <div class="mb-3" style="max-height: 360px; overflow-y: auto;">
+                        @if (Model.Messages.Count == 0)
+                        {
+                            <div class="text-muted">Пока нет сообщений. Опишите ваши предпочтения.</div>
+                        }
+                        else
+                        {
+                            @foreach (var message in Model.Messages)
+                            {
+                                var isUser = string.Equals(message.Role, "user", StringComparison.OrdinalIgnoreCase);
+                                <div class="mb-2 p-2 rounded @(isUser ? "bg-light" : "bg-white border")">
+                                    <strong>@(isUser ? "Вы" : "AI"):</strong>
+                                    <div>@message.Content</div>
+                                </div>
+                            }
+                        }
+                    </div>
+
+                    <form method="post">
+                        <div class="mb-3">
+                            <label asp-for="Input.Level" class="form-label"></label>
+                            <select asp-for="Input.Level" class="form-select">
+                                <option>Новичок</option>
+                                <option>Средний</option>
+                                <option>Продвинутый</option>
+                            </select>
+                            <span asp-validation-for="Input.Level" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.WorkoutsPerWeek" class="form-label"></label>
+                            <input asp-for="Input.WorkoutsPerWeek" class="form-control" type="number" min="1" max="7" />
+                            <span asp-validation-for="Input.WorkoutsPerWeek" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Input.Message" class="form-label"></label>
+                            <textarea asp-for="Input.Message" class="form-control" rows="4" placeholder="Например: хочу 3 тренировки, без четверга и пятницы"></textarea>
+                            <span asp-validation-for="Input.Message" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary">Отправить</button>
+                        </div>
+                    </form>
+
+                    <form method="post" asp-page-handler="Reset" class="mt-2">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">Сбросить чат</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5 mb-4">
+            <div class="card">
+                <div class="card-header">Рекомендованные тренировки</div>
+                <div class="card-body">
+                    @if (Model.RecommendedWorkouts.Count == 0)
+                    {
+                        <div class="text-muted">После сообщения AI здесь появятся рекомендации.</div>
+                    }
+                    else
+                    {
+                        @foreach (var workout in Model.RecommendedWorkouts)
+                        {
+                            <div class="border rounded p-2 mb-2">
+                                <div><strong>@workout.Title</strong></div>
+                                <div class="small text-muted">@workout.DayOfWeekLabel, @workout.StartTime.ToString("dd.MM HH:mm")</div>
+                                <div class="small">Тренер: @workout.Trainer</div>
+                                <div class="small mb-2">Цена: @workout.Price.ToString("0.##")</div>
+
+                                @if (workout.IsAlreadyBooked)
+                                {
+                                    <span class="badge bg-success">Уже записаны</span>
+                                }
+                                else
+                                {
+                                    <form method="post" asp-page-handler="Enroll" asp-route-workoutId="@workout.Id">
+                                        <button type="submit" class="btn btn-sm btn-success">Записаться</button>
+                                    </form>
+                                }
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
