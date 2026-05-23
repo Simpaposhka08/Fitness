@@ -1,0 +1,52 @@
+[
+  {
+    "level": "Средний",
+    "workouts_per_week": 2,
+    "title": "Силовая тренировка",
+    "trainer": "Мария Васильева",
+    "weekday": "пятница",
+    "hour": 11,
+    "price": 300,
+    "label": 1
+  },
+  {
+    "level": "Средний",
+    "workouts_per_week": 2,
+    "title": "Танцевальная аэробика",
+    "trainer": "Евгений Федоров",
+    "weekday": "суббота",
+    "hour": 15,
+    "price": 700,
+    "label": 1
+  },
+  {
+    "level": "Новичок",
+    "workouts_per_week": 3,
+    "title": "Тай-чи",
+    "trainer": "Светлана Борисова",
+    "weekday": "пятница",
+    "hour": 18,
+    "price": 1000,
+    "label": 1
+  },
+  {
+    "level": "Средний",
+    "workouts_per_week": 1,
+    "title": "Силовая тренировка",
+    "trainer": "Мария Васильева",
+    "weekday": "суббота",
+    "hour": 11,
+    "price": 300,
+    "label": 1
+  },
+  {
+    "level": "Средний",
+    "workouts_per_week": 2,
+    "title": "Функциональный тренинг",
+    "trainer": "Ольга Чернова",
+    "weekday": "суббота",
+    "hour": 14,
+    "price": 600,
+    "label": 1
+  }
+]

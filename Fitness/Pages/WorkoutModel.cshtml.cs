@@ -31,7 +31,7 @@ public class WorkoutModel : PageModel
 
     public async Task<IActionResult> OnPostComeWorkoutAsync(int workoutId)
     {
-        if (!User.Identity.IsAuthenticated)
+        if (User.Identity?.IsAuthenticated != true)
         {
             TempData["Message"] = "Вы должны войти в систему, чтобы записаться на тренировку.";
             return RedirectToPage("/Login");

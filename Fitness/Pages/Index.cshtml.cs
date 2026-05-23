@@ -64,7 +64,7 @@ public class IndexModel : PageModel
             CurrentDate = todayUtc;
         }
 
-        var userId = User.Identity.IsAuthenticated ? User.FindFirstValue(ClaimTypes.NameIdentifier) : null;
+        var userId = User.Identity?.IsAuthenticated == true ? User.FindFirstValue(ClaimTypes.NameIdentifier) : null;
 
         // Используем UTC для сравнения с данными из БД
         var nowUtc = DateTime.UtcNow;
@@ -98,7 +98,7 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostComeWorkoutAsync(int workoutId)
     {
-        if (!User.Identity.IsAuthenticated)
+        if (User.Identity?.IsAuthenticated != true)
         {
             TempData["Message"] = "Вы должны войти в систему, чтобы записаться на тренировку.";
             await OnGetAsync(string.Empty);
@@ -172,7 +172,7 @@ public class IndexModel : PageModel
 
     public async Task<IActionResult> OnPostAddWorkoutAsync()
     {
-        if (!User.Identity.IsAuthenticated || User.FindFirst(c => c.Type == "IsAdmin")?.Value != "True")
+        if (User.Identity?.IsAuthenticated != true || User.FindFirst(c => c.Type == "IsAdmin")?.Value != "True")
         {
             TempData["Message"] = "Недостаточно прав для добавления тренировки.";
             return RedirectToPage();

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\444\\Desktop\\Fitness\\Fitness\\Fitness.csproj": {}
+    "C:\\Users\\444\\Desktop\\Fitness — копия\\Fitness\\Fitness.csproj": {}
   },
   "projects": {
-    "C:\\Users\\444\\Desktop\\Fitness\\Fitness\\Fitness.csproj": {
+    "C:\\Users\\444\\Desktop\\Fitness — копия\\Fitness\\Fitness.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\444\\Desktop\\Fitness\\Fitness\\Fitness.csproj",
+        "projectUniqueName": "C:\\Users\\444\\Desktop\\Fitness — копия\\Fitness\\Fitness.csproj",
         "projectName": "Fitness",
-        "projectPath": "C:\\Users\\444\\Desktop\\Fitness\\Fitness\\Fitness.csproj",
+        "projectPath": "C:\\Users\\444\\Desktop\\Fitness — копия\\Fitness\\Fitness.csproj",
         "packagesPath": "C:\\Users\\444\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\444\\Desktop\\Fitness\\Fitness\\obj\\",
+        "outputPath": "C:\\Users\\444\\Desktop\\Fitness — копия\\Fitness\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

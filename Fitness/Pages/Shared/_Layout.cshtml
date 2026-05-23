@@ -29,7 +29,10 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1 justify-content-end align-items-center">
-                        @if (User.Identity.IsAuthenticated)
+                        <li class="nav-item me-2">
+                            <a class="nav-link" asp-area="" asp-page="/AICoach">🤖 AI Coach</a>
+                        </li>
+                        @if (User.Identity?.IsAuthenticated == true)
                         {
                             <li class="nav-item me-3">
                                 <span class="navbar-text">
